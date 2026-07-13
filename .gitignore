@@ -21,6 +21,7 @@ venv/
 env/
 ENV/
 
+data/repositories/
 
 # Django
 
