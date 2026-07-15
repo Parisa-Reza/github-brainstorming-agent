@@ -18,7 +18,7 @@ from mentor.storage.vector_storage_service import (
 def main():
 
     repo_url = (
-        "https://github.com/AbdulRehman-z/ecommerce-golang-fiber-mongodb"
+        "https://github.com/langchain-ai/langchain"
     )
 
     print("Loading repository...")
@@ -61,7 +61,7 @@ def main():
 
     embeddings = (
         embedding_workflow.generate_embeddings(
-            chunks[:100]
+            chunks[:17919]
         )
     )
 
