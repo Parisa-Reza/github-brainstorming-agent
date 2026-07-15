@@ -1,3 +1,5 @@
+
+```text
 GitHub Repo URL
       │
       ▼
@@ -28,3 +30,5 @@ GitHub Repo URL
 Ready for search / comparison
       └── When a search matches an embedding, use (file_path, chunk_index)
           to find and display the original chunk text
+
+```
