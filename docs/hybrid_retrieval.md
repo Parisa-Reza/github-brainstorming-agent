@@ -1,3 +1,4 @@
+```text
 Question
    ↓
 Vector Search
@@ -13,3 +14,4 @@ Graph Nodes
 Context Builder
    ↓
 Final Hybrid Context
+```
