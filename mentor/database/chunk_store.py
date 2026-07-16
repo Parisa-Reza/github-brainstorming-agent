@@ -38,3 +38,19 @@ class ChunkStore:
                 content=embedding.content,
                 embedding=embedding.embedding,
             )
+
+    def get_chunks_by_repository(
+        self,
+        repository_id: str,
+    ):
+
+        return self.db.query(
+            """
+            SELECT *
+            FROM chunk
+            WHERE repository_id = $repository_id;
+            """,
+            {
+                "repository_id": repository_id,
+            },
+        )

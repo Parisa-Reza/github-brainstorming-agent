@@ -56,3 +56,17 @@ class RepositoryStore:
             repo_name,
             repo_url,
         )
+    
+    def get_repository_id(
+        self,
+        repo_url: str,
+    ):
+
+        repository = self.get_by_url(
+            repo_url
+        )
+
+        if repository:
+            return repository["id"]
+
+        return None

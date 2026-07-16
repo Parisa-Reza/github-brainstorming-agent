@@ -1,3 +1,4 @@
+
 from mentor.hybrid_retrieval.hybrid_retriever import (
     HybridRetriever,
 )
@@ -7,31 +8,71 @@ from mentor.llm.answer_generator import (
 )
 
 
-retriever = (
-    HybridRetriever()
-)
-
-generator = (
-    AnswerGenerator()
-)
-
-
 class ChatService:
+
+    def __init__(self):
+
+        self.retriever = (
+            HybridRetriever()
+        )
+
+        self.generator = (
+            AnswerGenerator()
+        )
 
     def ask(
         self,
         question: str,
+        repo_url: str,
     ):
 
         context = (
-            retriever.retrieve(
-                question
+            self.retriever.retrieve(
+                question,
+                repo_url,
             )
         )
 
         return (
-            generator.generate(
+            self.generator.generate(
                 question,
                 context,
             )
         )
+# from mentor.hybrid_retrieval.hybrid_retriever import (
+#     HybridRetriever,
+# )
+
+# from mentor.llm.answer_generator import (
+#     AnswerGenerator,
+# )
+
+
+# retriever = (
+#     HybridRetriever()
+# )
+
+# generator = (
+#     AnswerGenerator()
+# )
+
+
+# class ChatService:
+
+#     def ask(
+#         self,
+#         question: str,
+#     ):
+
+#         context = (
+#             retriever.retrieve(
+#                 question
+#             )
+#         )
+
+#         return (
+#             generator.generate(
+#                 question,
+#                 context,
+#             )
+#         )

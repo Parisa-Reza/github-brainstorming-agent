@@ -26,6 +26,7 @@ class RetrievalWorkflow:
     def retrieve(
         self,
         question: str,
+        repository_id: str,
         top_k: int = 3,
     ):
 
@@ -38,7 +39,7 @@ class RetrievalWorkflow:
 
         chunks = (
             self.retriever_service
-            .get_chunks()
+            .get_chunks( repository_id)
         )
 
         scored_chunks = []

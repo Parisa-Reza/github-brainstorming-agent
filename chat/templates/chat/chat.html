@@ -21,6 +21,36 @@
 
         </div>
 
+        <div class="repository-section">
+
+            <form method="post">
+
+                {% csrf_token %}
+
+                <input type="text" name="github_url" placeholder="Paste GitHub Repository URL" class="repo-input">
+
+                <button type="submit">
+                    Load Repository
+                </button>
+
+            </form>
+
+            {% if repo_url %}
+
+            <div class="repo-info">
+
+                Active Repository:
+
+                <br>
+
+                {{ repo_url }}
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
         <div class="chat-window">
 
             {% for message in messages %}
@@ -39,6 +69,8 @@
 
         </div>
 
+        {% if repo_url %}
+
         <form method="post" class="chat-form">
 
             {% csrf_token %}
@@ -52,6 +84,16 @@
             </button>
 
         </form>
+
+        {% else %}
+
+        <div class="warning">
+
+            Load a GitHub repository before chatting.
+
+        </div>
+
+        {% endif %}
 
     </div>
 
