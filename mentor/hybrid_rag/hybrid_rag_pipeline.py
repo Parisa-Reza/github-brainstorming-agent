@@ -2,12 +2,8 @@ from mentor.hybrid_retrieval.hybrid_retriever import (
     HybridRetriever,
 )
 
-from mentor.llm.prompt_builder import (
-    PromptBuilder,
-)
-
-from mentor.llm.llm_service import (
-    LLMService,
+from mentor.llm.answer_generator import (
+    AnswerGenerator,
 )
 
 
@@ -19,12 +15,8 @@ class RAGPipeline:
             HybridRetriever()
         )
 
-        self.prompt_builder = (
-            PromptBuilder()
-        )
-
-        self.llm_service = (
-            LLMService()
+        self.generator = (
+            AnswerGenerator()
         )
 
     def ask(
@@ -38,17 +30,12 @@ class RAGPipeline:
             )
         )
 
-        prompt = (
-            self.prompt_builder.build(
-                question,
-                context,
-            )
-        )
-
         answer = (
-            self.llm_service.generate(
-                prompt
+            self.generator.generate(
+                question=question,
+                context=context,
             )
         )
 
         return answer
+

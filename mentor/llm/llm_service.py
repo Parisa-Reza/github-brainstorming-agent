@@ -1,3 +1,4 @@
+
 from langchain_google_genai import (
     ChatGoogleGenerativeAI,
 )
@@ -9,17 +10,11 @@ class LLMService:
 
         self.llm = (
             ChatGoogleGenerativeAI(
-                model="gemini-2.5-flash"
+                model="gemini-3.1-flash-lite"
             )
         )
 
-    def generate(
-        self,
-        prompt: str,
-    ):
+    def get_llm(self):
 
-        response = self.llm.invoke(
-            prompt
-        )
+        return self.llm
 
-        return response.content
