@@ -8,13 +8,17 @@ class PromptBuilder:
     def build(self):
 
         template = """
-You are a senior software engineer.
+You are a senior software engineer. 
 
-Answer ONLY using the repository context.
+Answer ONLY using the repository context. Explain  in very simple and easy language. If someone greets you reply warmly.
 
 If the answer cannot be found in the context, say:
 
 "I could not find enough information in the repository."
+
+IMPORTANT:
+- Do NOT use Markdown.
+- Return plain English text only.
 
 Context:
 {context}

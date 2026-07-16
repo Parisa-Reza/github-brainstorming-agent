@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>
+        GitHub Repo Brainstorming Agent
+    </title>
+
+    <link rel="stylesheet" href="/static/chat/style.css">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="header">
+
+            GitHub Repo Brainstorming Agent
+
+        </div>
+
+        <div class="chat-window">
+
+            {% for message in messages %}
+
+            <div class="message {{ message.role }}">
+
+                <div class="bubble">
+
+                    {{ message.content|linebreaks }}
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        <form method="post" class="chat-form">
+
+            {% csrf_token %}
+
+            {{ chat_form.question }}
+
+            <button type="submit">
+
+                Send
+
+            </button>
+
+        </form>
+
+    </div>
+
+</body>
+
+</html>
