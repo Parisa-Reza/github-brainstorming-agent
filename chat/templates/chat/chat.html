@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 
@@ -7,7 +8,9 @@
         GitHub Repo Brainstorming Agent
     </title>
 
-    <link rel="stylesheet" href="/static/chat/style.css">
+    <link rel="stylesheet" href="/static/chat/css/style.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github-dark.min.css">
 
 </head>
 
@@ -51,7 +54,7 @@
 
         </div>
 
-        <div class="chat-window">
+        <!-- <div class="chat-window" id="chat-window">
 
             {% for message in messages %}
 
@@ -67,11 +70,38 @@
 
             {% endfor %}
 
+        </div> -->
+        <div class="chat-window" id="chat-window">
+
+            {% for message in messages %}
+
+            <div class="message {{ message.role }}">
+
+                {% if message.role == "assistant" %}
+
+                <!-- <div class="bubble markdown-content"> -->
+                <div class="bubble markdown-body markdown-content">
+                    {{ message.content }}
+                </div>
+
+                {% else %}
+
+                <div class="bubble">
+                    {{ message.content }}
+                </div>
+
+                {% endif %}
+
+            </div>
+
+            {% endfor %}
+
         </div>
 
         {% if repo_url %}
 
-        <form method="post" class="chat-form">
+        <!-- <form method="post" class="chat-form"> -->
+        <form id="chat-form" class="chat-form" autocomplete="off">
 
             {% csrf_token %}
 
@@ -96,6 +126,87 @@
         {% endif %}
 
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+    <!-- <script>
+
+        document
+            .querySelectorAll(
+                ".markdown-content"
+            )
+            .forEach(
+                function (element) {
+
+                    const html =
+                        marked.parse(
+                            element.textContent
+                        );
+
+                    element.innerHTML =
+                        html;
+
+                    element
+                        .querySelectorAll(
+                            "pre code"
+                        )
+                        .forEach(
+                            (block) => {
+
+                                if (
+                                    typeof hljs !==
+                                    "undefined"
+                                ) {
+                                    hljs.highlightElement(
+                                        block
+                                    );
+                                }
+
+                            }
+                        );
+                }
+            );
+
+    </script> -->
+    <script>
+
+        document
+            .querySelectorAll(
+                ".markdown-content"
+            )
+            .forEach(
+                function (element) {
+
+                    const markdown =
+                        element.textContent;
+
+                    element.innerHTML =
+                        marked.parse(
+                            markdown,
+                            {
+                                breaks: true,
+                                gfm: true
+                            }
+                        );
+
+                    element
+                        .querySelectorAll(
+                            "pre code"
+                        )
+                        .forEach(
+                            (block) => {
+                                hljs.highlightElement(
+                                    block
+                                );
+                            }
+                        );
+
+                }
+            );
+
+    </script>
+    <script src="{% static 'chat/js/chat.js' %}"></script>
 
 </body>
 
