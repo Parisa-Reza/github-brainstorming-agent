@@ -8,7 +8,7 @@ class ChatForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 "placeholder":
-                "Ask about LangChain..."
+                "Ask about the repository..."
             }
         )
     )
