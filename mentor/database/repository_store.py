@@ -1,3 +1,4 @@
+from surrealdb.errors import NotFoundError
 class RepositoryStore:
 
     def __init__(self, db):
@@ -8,22 +9,27 @@ class RepositoryStore:
         repo_url: str,
     ):
 
-        result = self.db.query(
-            """
-            SELECT *
-            FROM repository
-            WHERE url = $url
-            LIMIT 1;
-            """,
-            {
-                "url": repo_url,
-            },
-        )
+        try:
 
-        if result:
-            return result[0]
+                    result = self.db.query(
+                        """
+                        SELECT *
+                        FROM repository
+                        WHERE url = $url
+                        LIMIT 1;
+                        """,
+                        {
+                            "url": repo_url,
+                        },
+                    )
 
-        return None
+                    if result:
+                        return result[0]
+
+                    return None
+
+        except NotFoundError:
+                    return None
 
     def create_repository(
         self,
