@@ -54,23 +54,7 @@
 
         </div>
 
-        <!-- <div class="chat-window" id="chat-window">
-
-            {% for message in messages %}
-
-            <div class="message {{ message.role }}">
-
-                <div class="bubble">
-
-                    {{ message.content|linebreaks }}
-
-                </div>
-
-            </div>
-
-            {% endfor %}
-
-        </div> -->
+ 
         <div class="chat-window" id="chat-window">
 
             {% for message in messages %}
@@ -79,10 +63,8 @@
 
                 {% if message.role == "assistant" %}
 
-                <!-- <div class="bubble markdown-content"> -->
-                <div class="bubble markdown-body markdown-content">
-                    {{ message.content }}
-                </div>
+                <div class="bubble markdown-body markdown-content">{{ message.content }}</div>
+
 
                 {% else %}
 
@@ -100,7 +82,6 @@
 
         {% if repo_url %}
 
-        <!-- <form method="post" class="chat-form"> -->
         <form id="chat-form" class="chat-form" autocomplete="off">
 
             {% csrf_token %}
@@ -130,82 +111,9 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-    <!-- <script>
 
-        document
-            .querySelectorAll(
-                ".markdown-content"
-            )
-            .forEach(
-                function (element) {
+    <script  src="{% static 'chat/js/markdown-render.js' %}"></script>>
 
-                    const html =
-                        marked.parse(
-                            element.textContent
-                        );
-
-                    element.innerHTML =
-                        html;
-
-                    element
-                        .querySelectorAll(
-                            "pre code"
-                        )
-                        .forEach(
-                            (block) => {
-
-                                if (
-                                    typeof hljs !==
-                                    "undefined"
-                                ) {
-                                    hljs.highlightElement(
-                                        block
-                                    );
-                                }
-
-                            }
-                        );
-                }
-            );
-
-    </script> -->
-    <script>
-
-        document
-            .querySelectorAll(
-                ".markdown-content"
-            )
-            .forEach(
-                function (element) {
-
-                    const markdown =
-                        element.textContent;
-
-                    element.innerHTML =
-                        marked.parse(
-                            markdown,
-                            {
-                                breaks: true,
-                                gfm: true
-                            }
-                        );
-
-                    element
-                        .querySelectorAll(
-                            "pre code"
-                        )
-                        .forEach(
-                            (block) => {
-                                hljs.highlightElement(
-                                    block
-                                );
-                            }
-                        );
-
-                }
-            );
-
-    </script>
     <script src="{% static 'chat/js/chat.js' %}"></script>
 
 </body>
