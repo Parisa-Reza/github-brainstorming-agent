@@ -1,51 +1,35 @@
-const form =
-    document.getElementById(
-        "chat-form"
-    );
+const form = document.getElementById("chat-form");
 
-const chatWindow =
-    document.getElementById(
-        "chat-window"
-    );
+const chatWindow = document.getElementById("chat-window");
 
 if (form) {
+  form.addEventListener("submit", async function (event) {
+    event.preventDefault();
 
-    form.addEventListener(
-        "submit",
-        async function (event) {
+    const input = document.querySelector("[name='question']");
 
-            event.preventDefault();
+    const question = input.value.trim();
 
-            const input =
-                document.querySelector(
-                    "[name='question']"
-                );
+    if (!question) {
+      return;
+    }
 
-            const question =
-                input.value.trim();
-
-            if (!question) {
-                return;
-            }
-
-            chatWindow.insertAdjacentHTML(
-                "beforeend",
-                `
+    chatWindow.insertAdjacentHTML(
+      "beforeend",
+      `
                 <div class="message user">
                     <div class="bubble">
                         ${question}
                     </div>
                 </div>
-                `
-            );
+                `,
+    );
 
-            const thinkingId =
-                "thinking-" +
-                Date.now();
+    const thinkingId = "thinking-" + Date.now();
 
-            chatWindow.insertAdjacentHTML(
-                "beforeend",
-                `
+    chatWindow.insertAdjacentHTML(
+      "beforeend",
+      `
                 <div
                     class="message assistant"
                     id="${thinkingId}"
@@ -54,116 +38,65 @@ if (form) {
                         Thinking...
                     </div>
                 </div>
-                `
-            );
+                `,
+    );
 
-            input.value = "";
+    input.value = "";
 
-            chatWindow.scrollTop =
-                chatWindow.scrollHeight;
+    chatWindow.scrollTop = chatWindow.scrollHeight;
 
-            const formData =
-                new FormData();
+    const formData = new FormData();
 
-            formData.append(
-                "question",
-                question
-            );
+    formData.append("question", question);
 
-            formData.append(
-                "csrfmiddlewaretoken",
-                document.querySelector(
-                    "[name=csrfmiddlewaretoken]"
-                ).value
-            );
+    formData.append(
+      "csrfmiddlewaretoken",
+      document.querySelector("[name=csrfmiddlewaretoken]").value,
+    );
 
-            try {
+    try {
+      const response = await fetch("/", {
+        method: "POST",
+        headers: {
+          "X-Requested-With": "XMLHttpRequest",
+        },
+        body: formData,
+      });
 
-                const response =
-                    await fetch(
-                        "/",
-                        {
-                            method: "POST",
-                            headers: {
-                                "X-Requested-With":
-                                    "XMLHttpRequest",
-                            },
-                            body: formData,
-                        }
-                    );
+      const data = await response.json();
 
-                const data =
-                    await response.json();
+      const html = marked.parse(data.answer, {
+        breaks: true,
+        gfm: true,
+      });
 
-                const html =
-                    marked.parse(
-                        data.answer,
-                        {
-                            breaks: true,
-                            gfm: true,
-                        }
-                    );
+      const thinkingBubble = document.getElementById(thinkingId);
 
-                const thinkingBubble =
-                    document.getElementById(
-                        thinkingId
-                    );
-
-                if (
-                    thinkingBubble
-                ) {
-
-                    thinkingBubble.innerHTML =
-                        `
+      if (thinkingBubble) {
+        thinkingBubble.innerHTML = `
                         <div class="bubble markdown-body">
                             ${html}
                         </div>
                         `;
 
-                    thinkingBubble
-                        .querySelectorAll(
-                            "pre code"
-                        )
-                        .forEach(
-                            (
-                                block
-                            ) => {
+        thinkingBubble.querySelectorAll("pre code").forEach((block) => {
+          hljs.highlightElement(block);
+        });
+      }
 
-                                hljs.highlightElement(
-                                    block
-                                );
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    } catch (error) {
+      console.error(error);
 
-                            }
-                        );
-                }
+      const thinkingBubble = document.getElementById(thinkingId);
 
-                chatWindow.scrollTop =
-                    chatWindow.scrollHeight;
-
-            } catch (error) {
-
-                console.error(
-                    error
-                );
-
-                const thinkingBubble =
-                    document.getElementById(
-                        thinkingId
-                    );
-
-                if (
-                    thinkingBubble
-                ) {
-
-                    thinkingBubble.innerHTML =
-                        `
+      if (thinkingBubble) {
+        thinkingBubble.innerHTML = `
                         <div class="bubble">
                             Error getting response.
                         </div>
                         `;
-                }
-            }
-        }
-    );
+      }
+    }
+  });
 }
-

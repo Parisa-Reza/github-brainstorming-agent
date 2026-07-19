@@ -23,6 +23,7 @@ class PromptBuilder:
 
         - Keep language simple, clear, and beginner-friendly — avoid unnecessary jargon.
         - Be concise, but don't skip important detail — prioritize clarity over brevity.
+        - Explain with code whenever possible, and provide relevant snippets rather than entire files of the repository.
         - Where helpful, briefly explain *why* the code works a certain way, not just *what* it does.
         - Reference specific file names or function names from the context when relevant, so the user knows where the logic lives.
 
