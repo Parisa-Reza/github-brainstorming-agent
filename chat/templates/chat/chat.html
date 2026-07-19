@@ -1,0 +1,121 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>
+        GitHub Repo Brainstorming Agent
+    </title>
+
+    <link rel="stylesheet" href="/static/chat/css/style.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github-dark.min.css">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="header">
+
+            GitHub Repo Brainstorming Agent
+
+        </div>
+
+        <div class="repository-section">
+
+            <form method="post">
+
+                {% csrf_token %}
+
+                <input type="text" name="github_url" placeholder="Paste GitHub Repository URL" class="repo-input">
+
+                <button type="submit">
+                    Load Repository
+                </button>
+
+            </form>
+
+            {% if repo_url %}
+
+            <div class="repo-info">
+
+                Active Repository:
+
+                <br>
+
+                {{ repo_url }}
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+ 
+        <div class="chat-window" id="chat-window">
+
+            {% for message in messages %}
+
+            <div class="message {{ message.role }}">
+
+                {% if message.role == "assistant" %}
+
+                <div class="bubble markdown-body markdown-content">{{ message.content }}</div>
+
+
+                {% else %}
+
+                <div class="bubble">
+                    {{ message.content }}
+                </div>
+
+                {% endif %}
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% if repo_url %}
+
+        <form id="chat-form" class="chat-form" autocomplete="off">
+
+            {% csrf_token %}
+
+            {{ chat_form.question }}
+
+            <button type="submit">
+
+                Send
+
+            </button>
+
+        </form>
+
+        {% else %}
+
+        <div class="warning">
+
+            Load a GitHub repository before chatting. Loading might take few minutes depending on the repository size.
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+
+    <script  src="{% static 'chat/js/markdown-render.js' %}"></script>>
+
+    <script src="{% static 'chat/js/chat.js' %}"></script>
+
+</body>
+
+</html>

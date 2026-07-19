@@ -1,3 +1,4 @@
+
 from mentor.graph.graph_service import (
     GraphService,
 )
@@ -11,12 +12,25 @@ from mentor.hybrid_retrieval.context_builder import (
 )
 
 from mentor.retriever.retrieval_workflow import (
-    RetrievalWorkflow
+    RetrievalWorkflow,
 )
 
 from mentor.hybrid_retrieval.entity_extractor import (
     EntityExtractor,
 )
+
+from mentor.database.surreal import (
+    get_db,
+)
+
+from mentor.database.repository_store import (
+    RepositoryStore,
+)
+
+from mentor.repositories.repository_locator import (
+    RepositoryLocator,
+)
+
 
 class HybridRetriever:
 
@@ -34,29 +48,43 @@ class HybridRetriever:
             GraphService()
         )
 
-        graph = (
-            self.graph_service.load_graph(
-                "data/repositories/langchain/"
-                "graphify-out/graph.json"
+        self.context_builder = (
+            ContextBuilder()
+        )
+
+        self.repository_store = (
+            RepositoryStore(
+                get_db()
             )
         )
 
-        self.graph_retriever = (
-            GraphRetriever(graph)
-        )
-
-        self.context_builder = (
-            ContextBuilder()
+        self.repository_locator = (
+            RepositoryLocator()
         )
 
     def retrieve(
         self,
         question: str,
+        repo_url: str,
     ):
+
+        repository_id = (
+            self.repository_store
+            .get_repository_id(
+                repo_url
+            )
+        )
+
+        if not repository_id:
+
+            return (
+                "Repository has not been indexed."
+            )
 
         vector_results = (
             self.vector_retriever.retrieve(
-                question
+                question,
+                repository_id,
             )
         )
 
@@ -72,15 +100,34 @@ class HybridRetriever:
 
         graph_results = []
 
-        for entity in entities:
+        graph_path = (
+            self.repository_locator
+            .get_graph_path(
+                repo_url
+            )
+        )
 
-            graph_results.extend(
-                self.graph_retriever.retrieve(
-                    entity
+        if graph_path.exists():
+
+            graph = (
+                self.graph_service.load_graph(
+                    graph_path
                 )
             )
 
+            graph_retriever = (
+                GraphRetriever(
+                    graph
+                )
+            )
 
+            for entity in entities:
+
+                graph_results.extend(
+                    graph_retriever.retrieve(
+                        entity
+                    )
+                )
 
         context = (
             self.context_builder.build(
@@ -90,3 +137,5 @@ class HybridRetriever:
         )
 
         return context
+
+

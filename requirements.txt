@@ -16,6 +16,7 @@ cuda-pathfinder==1.5.6
 cuda-toolkit==13.0.3.0
 distro==1.9.0
 Django==6.0.7
+django-environ==0.14.0
 filelock==3.29.7
 filetype==1.2.0
 frozenlist==1.8.0
@@ -41,6 +42,7 @@ httpx==0.28.1
 huggingface_hub==1.23.0
 idna==3.18
 Jinja2==3.1.6
+jiter==0.16.0
 joblib==1.5.3
 jsonpatch==1.33
 jsonpointer==3.1.1
@@ -76,6 +78,7 @@ nvidia-nccl-cu13==2.29.7
 nvidia-nvjitlink==13.3.33
 nvidia-nvshmem-cu13==3.4.5
 nvidia-nvtx==13.0.85
+openai==2.46.0
 orjson==3.11.9
 ormsgpack==1.12.2
 packaging==26.2
