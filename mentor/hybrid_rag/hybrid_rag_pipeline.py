@@ -37,5 +37,17 @@ class RAGPipeline:
             )
         )
 
+        self.memory.save_message(
+            session_id=session_id,
+            role="user",
+            content=question,
+        )
+
+        self.memory.save_message(
+            session_id=session_id,
+            role="assistant",
+            content=answer,
+        )
+
         return answer
 

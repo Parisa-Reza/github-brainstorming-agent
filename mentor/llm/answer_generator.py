@@ -32,16 +32,31 @@ class AnswerGenerator:
     self,
     question: str,
     context: str,
+    history: list,
     ):
+
+        history_text = ""
+
+        for message in history:
+
+            history_text += (
+                f"{message['role']}: "
+                f"{message['content']}\n"
+            )
 
         prompt = (
             self.prompt_builder
             .build()
             .format(
+                history=history_text,
                 context=context,
                 question=question,
             )
         )
+
+        print("\n========== PROMPT ==========\n")
+        print(prompt)
+        print("\n============================\n")
 
         response = (
             self.llm.invoke(

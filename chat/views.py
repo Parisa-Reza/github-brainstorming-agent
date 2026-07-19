@@ -69,7 +69,10 @@ def chat_page(request):
             answer = ChatService().ask(
                 question,
                 repo_url,
+                request.session.session_key,
             )
+
+            
 
             answer = answer.strip()
 

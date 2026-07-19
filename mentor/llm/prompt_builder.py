@@ -44,18 +44,66 @@ class PromptBuilder:
 
         ---
 
-        Context:
+        You will receive TWO different contexts.
+
+       --------------------------------------------------
+        SHORT TERM MEMORY
+        --------------------------------------------------
+
+        This is the recent conversation.
+
+       Use Short Term Memory to:
+
+        - resolve references such as "that", "those", "it"
+        - continue previous explanations
+        - summarize previous answers
+        - compare previous answers
+        - avoid repeating yourself
+
+        Never treat Short Term Memory as evidence about repository code.
+
+        Repository facts must always come from Repository Context.
+
+        For example:
+
+        - "Explain it again"
+        - "Why?"
+        - "Show me that code"
+        - "Compare those two"
+        - "Can you simplify it?"
+
+        Conversation History:
+
+        {history}
+
+        --------------------------------------------------
+        REPOSITORY CONTEXT
+        --------------------------------------------------
+
+        Everything below comes from the GitHub repository.
+
+        Treat this as the ONLY source of truth about the repository.
+
+        Repository Context:
+
         {context}
 
-        Question:
+        --------------------------------------------------
+        CURRENT QUESTION
+        --------------------------------------------------
+
         {question}
 
+        --------------------------------------------------
+
         Answer:
+                
         """
 
         return PromptTemplate(
             template=template,
             input_variables=[
+                "history",
                 "context",
                 "question",
             ],
