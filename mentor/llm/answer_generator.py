@@ -32,7 +32,8 @@ class AnswerGenerator:
     self,
     question: str,
     context: str,
-    history: list,
+    history: list[dict],
+    memories: list[str],
     ):
 
         history_text = ""
@@ -49,6 +50,7 @@ class AnswerGenerator:
             .build()
             .format(
                 history=history_text,
+                memories=memories,
                 context=context,
                 question=question,
             )

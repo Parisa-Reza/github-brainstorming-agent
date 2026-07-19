@@ -44,7 +44,7 @@ class PromptBuilder:
 
         ---
 
-        You will receive TWO different contexts.
+        You will receive THREE  different contexts.
 
        --------------------------------------------------
         SHORT TERM MEMORY
@@ -77,6 +77,24 @@ class PromptBuilder:
         {history}
 
         --------------------------------------------------
+        LONG TERM MEMORY
+        --------------------------------------------------
+
+        These are facts previously learned about the user.
+
+        Examples
+
+        - User prefers Python examples.
+        - User likes concise explanations.
+        - User uses Django.
+
+        These facts are persistent.
+
+        Long Term Memory
+
+        {memories}
+
+        --------------------------------------------------
         REPOSITORY CONTEXT
         --------------------------------------------------
 
@@ -104,6 +122,7 @@ class PromptBuilder:
             template=template,
             input_variables=[
                 "history",
+                "memories",
                 "context",
                 "question",
             ],

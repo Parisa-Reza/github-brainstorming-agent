@@ -10,6 +10,9 @@ from mentor.memory.short_term_memory.short_term_memory import (
     ShortTermMemory,
 )
 
+from mentor.memory.long_term_memory.long_term_memory import (
+    LongTermMemory,
+)
 
 class ChatService:
 
@@ -20,6 +23,7 @@ class ChatService:
         self.generator = AnswerGenerator()
 
         self.memory = ShortTermMemory()
+        self.long_memory = LongTermMemory()
 
     def ask(
         self,
@@ -30,6 +34,10 @@ class ChatService:
 
         # Load conversation history
         history = self.memory.get_history(
+            conversation_id
+        )
+
+        memories = self.long_memory.get(
             conversation_id
         )
 
@@ -44,6 +52,7 @@ class ChatService:
             question=question,
             context=context,
             history=history,
+            memories=memories,
         )
 
         # Save conversation
@@ -55,6 +64,15 @@ class ChatService:
         self.memory.save_assistant_message(
             conversation_id,
             answer,
+        )
+        self.long_memory.process(
+
+            conversation_id,
+
+            question,
+
+            answer,
+
         )
 
         return answer

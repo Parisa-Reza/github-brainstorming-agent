@@ -28,5 +28,8 @@ def get_db():
 
 if __name__ == "__main__":
     db = get_db()
+    db.query("""
+        DEFINE TABLE memory SCHEMALESS;
+        """)
     result = db.query("INFO FOR DB;")
     print("DB Connected successfully:", result)
