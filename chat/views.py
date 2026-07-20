@@ -4,6 +4,7 @@ from django.shortcuts import (
 )
 
 from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
 
 from chat.forms import (
     ChatForm,
@@ -18,6 +19,7 @@ from mentor.repositories.repository_ingestion_workflow import (
 )
 
 
+@require_http_methods(["GET", "POST"])
 def chat_page(request):
 
     if "messages" not in request.session:
@@ -32,11 +34,6 @@ def chat_page(request):
         )
 
         if github_url:
-
-            if github_url == request.session.get(
-                "repo_url"
-            ):
-                return redirect("/")
 
             RepositoryIngestionWorkflow(
             ).ingest(
@@ -66,11 +63,30 @@ def chat_page(request):
                 )
             )
 
-            answer = ChatService().ask(
-                question,
-                repo_url,
-                request.session.session_key,
-            )
+            if not repo_url:
+                return JsonResponse(
+                    {
+                        "answer": "Load a GitHub repository before asking a question."
+                    },
+                    status=400,
+                )
+
+            try:
+                answer = ChatService().ask(
+                    question,
+                    repo_url,
+                    request.session.session_key,
+                )
+            except Exception as error:
+                # Keep AJAX responses JSON so the client can display the
+                # server error instead of failing while parsing an HTML page.
+                print(f"Chat request failed: {error}")
+                return JsonResponse(
+                    {
+                        "answer": "Unable to answer that question right now. Please try again."
+                    },
+                    status=500,
+                )
 
             
 
@@ -135,4 +151,3 @@ def chat_page(request):
             ),
         },
     )
-

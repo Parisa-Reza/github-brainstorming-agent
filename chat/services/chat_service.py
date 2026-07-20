@@ -1,3 +1,5 @@
+import hashlib
+
 from mentor.hybrid_retrieval.hybrid_retriever import (
     HybridRetriever,
 )
@@ -51,9 +53,19 @@ class ChatService:
         conversation_id: str,
     ):
 
+        # A browser session can load several repositories.  Keeping memory
+        # under only the browser session made answers about a previously
+        # loaded repository available to the next repository's prompt.
+        repository_conversation_id = (
+            self._repository_conversation_id(
+                conversation_id,
+                repo_url,
+            )
+        )
+
         # Load conversation history
         history = self.memory.get_history(
-            conversation_id
+            repository_conversation_id
         )
 
         # if self.router.use_mcp(question):
@@ -139,10 +151,27 @@ class ChatService:
 
         if route:
 
-            mcp_context = self.github.execute(route)
+            # GitHub metadata is already an authoritative, user-readable
+            # response. Do not send it through hybrid retrieval/LLM, which
+            # previously mixed it with another repository and could fail after
+            # the MCP call had succeeded.
+            answer = self.github.execute(route)
+
+            if answer:
+                self.memory.save_user_message(
+                    repository_conversation_id,
+                    question,
+                )
+                self.memory.save_assistant_message(
+                    repository_conversation_id,
+                    answer,
+                )
+                return answer
+
+            return "GitHub did not return information for the active repository."
 
         memories = self.long_memory.get(
-            conversation_id
+            repository_conversation_id
         )
 
         # Retrieve repository context
@@ -215,23 +244,31 @@ class ChatService:
 
         # Save conversation
         self.memory.save_user_message(
-            conversation_id,
+            repository_conversation_id,
             question,
         )
 
         self.memory.save_assistant_message(
-            conversation_id,
+            repository_conversation_id,
             answer,
         )
         self.long_memory.process(
-
-            conversation_id,
-
+            repository_conversation_id,
             question,
-
             answer,
-
         )
 
         return answer
 
+    @staticmethod
+    def _repository_conversation_id(
+        conversation_id: str,
+        repo_url: str,
+    ) -> str:
+        """Keep one browser's chat context separate for each repository."""
+        normalized_url = repo_url.rstrip("/").lower()
+        repository_key = hashlib.sha256(
+            normalized_url.encode("utf-8")
+        ).hexdigest()[:16]
+
+        return f"{conversation_id}:{repository_key}"

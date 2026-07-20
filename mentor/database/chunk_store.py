@@ -39,6 +39,21 @@ class ChunkStore:
                 embedding=embedding.embedding,
             )
 
+    def delete_chunks_by_repository(
+        self,
+        repository_id: str,
+    ):
+        """Remove stale chunks before a repository is indexed again."""
+        return self.db.query(
+            """
+            DELETE chunk
+            WHERE repository_id = $repository_id;
+            """,
+            {
+                "repository_id": repository_id,
+            },
+        )
+
     def get_chunks_by_repository(
         self,
         repository_id: str,

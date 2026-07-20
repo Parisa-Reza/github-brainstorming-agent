@@ -63,7 +63,17 @@ if (form) {
         body: formData,
       });
 
+      const contentType = response.headers.get("content-type") || "";
+
+      if (!contentType.includes("application/json")) {
+        throw new Error("The server returned a non-JSON response.");
+      }
+
       const data = await response.json();
+
+      if (typeof data.answer !== "string") {
+        throw new Error("The server could not answer the question.");
+      }
 
       const html = marked.parse(data.answer, {
         breaks: true,

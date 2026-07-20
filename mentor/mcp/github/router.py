@@ -7,7 +7,27 @@ class MCPRouter:
         repo: str,
     ):
 
-        question = question.lower()
+        normalized_question = question.lower()
+
+        if (
+            "this commit" in normalized_question
+            or "specific commit" in normalized_question
+            or "commit details" in normalized_question
+            or "details of" in normalized_question and "commit" in normalized_question
+            or "changes in" in normalized_question and "commit" in normalized_question
+            or "files modified" in normalized_question
+        ):
+
+            return {
+                "tool": "get_commit_details",
+                "args": {
+                    "owner": owner,
+                    "repo": repo,
+                    "question": question,
+                },
+            }
+
+        question = normalized_question
 
         if "readme" in question:
 
