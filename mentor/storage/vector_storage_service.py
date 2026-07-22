@@ -34,6 +34,13 @@ class VectorStorageService:
 
         repository_id = repository["id"]
 
+        # Loading the same URL again must replace its index.  Appending left
+        # stale chunks from an earlier (and, before owner-scoped checkouts,
+        # potentially different) repository available to retrieval.
+        self.chunk_store.delete_chunks_by_repository(
+            repository_id
+        )
+
         self.chunk_store.create_chunks(
             repository_id,
             embeddings,

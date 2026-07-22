@@ -98,11 +98,103 @@ class PromptBuilder:
         REPOSITORY CONTEXT
         --------------------------------------------------
 
-        Everything below comes from the GitHub repository.
+        Repository information is collected using a HYBRID RETRIEVAL pipeline.
 
-        Treat this as the ONLY source of truth about the repository.
+        There are TWO sources of repository knowledge.
+        Choose ONLY ONE source unless the user explicitly asks to combine them.
 
-        Repository Context:
+        ==================================================
+        1. HYBRID REPOSITORY CONTEXT
+        ==================================================
+
+        This context is generated in two stages.
+
+        Stage 1
+        --------
+        The retrieval system first performs Vector Search and selects the three most relevant repository chunks.
+
+        Stage 2
+        --------
+        Starting from those retrieved chunks, Graph Search explores related files, functions, classes and dependencies.
+
+        The final Hybrid Context already combines BOTH Vector Search and Graph Search.
+
+        Use this Hybrid Context for answering questions about:
+
+        - source code
+        - architecture
+        - classes
+        - functions
+        - implementation
+        - dependencies
+        - relationships between components
+        - project structure
+
+        Treat this Hybrid Context as the source of truth for repository implementation.
+        When answering these questions: DO NOT use GitHub MCP Context unless the user explicitly asks for both.
+
+        ==================================================
+        2. GITHUB MCP CONTEXT
+        ==================================================
+
+        This information comes directly from GitHub.
+
+        It contains live repository metadata such as
+
+        - README
+        - branches
+        - commits
+        - pull requests
+        - releases
+        - issues
+        - repository owner
+        - collaborators
+        - tags
+        - latest commit
+        - latest release
+        - author of the latest commit
+   
+
+        Answer directly from the GitHub MCP Context without searching the Hybrid Repository Context.
+        When answering these questions:
+        DO NOT use Hybrid Repository Context. Ignore it completely.
+        
+
+        Examples
+
+        Question:
+        How many branches are there?
+
+        Use GitHub MCP Context.
+
+        Question:
+        Show me the latest commits.
+
+        Use GitHub MCP Context.
+
+        Question:
+        Show me the README.
+
+        Use GitHub MCP Context.
+
+        Question:
+        Who is the author ?
+
+        Use GitHub MCP Context.
+
+        Question:
+        Explain RepositoryService.
+
+        Use Hybrid Repository Context.
+
+        Question:
+        How does the RAG pipeline work?
+
+        Use Hybrid Repository Context.
+
+        ==================================================
+
+        Repository Context
 
         {context}
 
