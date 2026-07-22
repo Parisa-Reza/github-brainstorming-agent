@@ -121,9 +121,12 @@ class GitHubService:
             )
         )
 
-        if result.isError:
+        # if result.isError:
 
-            return None
+        #     return None
+
+        if result.isError:
+            raise Exception(result)
             
         return self.context_builder.build(
 
