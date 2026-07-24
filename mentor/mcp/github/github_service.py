@@ -15,7 +15,6 @@ class GitHubService:
     def __init__(self):
 
         self.client = GitHubMCPClient()
-        # self.formatter = MCPResponseFormatter()
         self.context_builder = GitHubContextBuilder()
 
     async def get_file_contents(
@@ -107,7 +106,6 @@ class GitHubService:
 
         result = await self.client.call_tool( tool, args )
 
-  return None
 
         if result.isError:
             raise Exception(result)

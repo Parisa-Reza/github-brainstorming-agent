@@ -21,8 +21,7 @@ class GitHubContextBuilder:
         if tool == "get_file_contents":
 
             return (
-                "GITHUB MCP CONTEXT\n"
-                "====================\n\n"
+
                 + text
             )
 
@@ -31,8 +30,7 @@ class GitHubContextBuilder:
             branches = json.loads(text)
 
             context = (
-                "GITHUB MCP CONTEXT\n"
-                "====================\n\n"
+
                 "Repository Branches\n\n"
             )
 
@@ -48,8 +46,7 @@ class GitHubContextBuilder:
             latest = commits[0]
 
             context = (
-                "GITHUB MCP CONTEXT\n"
-                "====================\n\n"
+                " "
             )
 
             context += (
@@ -108,8 +105,7 @@ class GitHubContextBuilder:
             pull_requests = json.loads(text)
 
             context = (
-                "GITHUB MCP CONTEXT\n"
-                "====================\n\n"
+
                 "Pull Requests\n\n"
             )
 
