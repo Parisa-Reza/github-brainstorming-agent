@@ -18,9 +18,15 @@ async def main():
 
             await session.initialize()
 
-            tools = await session.list_tools()
+            result = await session.call_tool(
+            "ask_repository",
+            {
+                "repository_url": "https://github.com/Parisa-Reza/PC-health-checking-MCP",
+                "question": "How many branches are there?",
+            },
+        )
 
-            print(tools)
+            print(result)
 
 
 asyncio.run(main())

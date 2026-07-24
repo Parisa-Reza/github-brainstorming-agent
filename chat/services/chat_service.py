@@ -1,4 +1,5 @@
 import hashlib
+import sys
 
 from mentor.hybrid_retrieval.hybrid_retriever import (
     HybridRetriever,
@@ -46,7 +47,7 @@ class ChatService:
 
         self.repository_parser = RepositoryParser()
 
-    def ask(
+    async def ask(
         self,
         question: str,
         repo_url: str,
@@ -68,79 +69,13 @@ class ChatService:
             repository_conversation_id
         )
 
-        # if self.router.use_mcp(question):
-
-        #     owner = "Parisa-Reza"
-
-        #     repo = repo_url.rstrip("/").split("/")[-1]
-
-        #     answer = self.github.get_file_contents(
-
-        #         owner,
-
-        #         repo,
-
-        #         "README.md",
-
-        #     )
-
-        #     if answer:
-
-        #         self.memory.save_user_message(
-
-        #             conversation_id,
-
-        #             question,
-
-        #         )
-
-        #         self.memory.save_assistant_message(
-
-        #             conversation_id,
-
-        #             answer,
-
-        #         )
-
-        #         return answer
-
+        
         owner, repo = self.repository_parser.parse(
             repo_url
         )
 
 
-        # route = self.router.route(
-
-        #     question,
-
-        #     owner,
-
-        #     repo,
-
-        # )
-
-        # if route:
-
-        #     answer = self.github.execute(route)
-
-        #     self.memory.save_user_message(
-
-        #         conversation_id,
-
-        #         question,
-
-        #     )
-
-        #     self.memory.save_assistant_message(
-
-        #         conversation_id,
-
-        #         answer,
-
-        #     )
-
-        #     return answer
-
+       
         route = self.router.route(
             question,
             owner,
@@ -155,7 +90,7 @@ class ChatService:
             # response. Do not send it through hybrid retrieval/LLM, which
             # previously mixed it with another repository and could fail after
             # the MCP call had succeeded.
-            answer = self.github.execute(route)
+            answer = await self.github.execute(route)
 
             if answer:
                 self.memory.save_user_message(
@@ -180,31 +115,17 @@ class ChatService:
             repo_url,
         )
 
-        print("\n==============================")
-        print("ACTIVE REPO")
-        print(repo_url)
-        print("==============================")
+        print("\n==============================" ,file=sys.stderr)
+        print("ACTIVE REPO",file=sys.stderr)
+        print(repo_url,file=sys.stderr)
+        print("==============================",file=sys.stderr)
 
-        print("\n==============================")
-        print("RETRIEVED CONTEXT")
-        print(context[:4000])
-        print("==============================")
+        print("\n==============================",file=sys.stderr)
+        print("RETRIEVED CONTEXT",file=sys.stderr)
+        print(context[:4000],file=sys.stderr)
+        print("==============================",file=sys.stderr)
 
-        # Generate answer
-        # answer = self.generator.generate(
-        #     question=question,
-        #     context=context,
-        #     history=history,
-        #     memories=memories,
-        # )
-
-        # combined_context = context
-
-        # if mcp_context:
-
-        #     combined_context += "\n\n"
-
-        #     combined_context += mcp_context
+       
 
         combined_context = f"""
         ==============================
@@ -225,15 +146,15 @@ class ChatService:
         {mcp_context}
         """
         
-        print("\n===================")
-        print("MCP CONTEXT:")
-        print(mcp_context)
-        print("===================")
+        print("\n===================",file=sys.stderr)
+        print("MCP CONTEXT:",file=sys.stderr)
+        print(mcp_context,file=sys.stderr)
+        print("===================",file=sys.stderr)
 
-        print("\n===================")
-        print("VECTOR CONTEXT:")
-        print(context[:1000])   # first 1000 chars
-        print("===================")
+        print("\n===================",file=sys.stderr)
+        print("VECTOR CONTEXT:",file=sys.stderr)
+        print(context[:1000],file=sys.stderr)   # first 1000 chars
+        print("===================",file=sys.stderr)
 
         answer = self.generator.generate(
             question=question,

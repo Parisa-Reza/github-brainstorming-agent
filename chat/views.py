@@ -1,3 +1,4 @@
+import asyncio
 from django.shortcuts import (
     render,
     redirect,
@@ -72,10 +73,17 @@ def chat_page(request):
                 )
 
             try:
-                answer = ChatService().ask(
-                    question,
-                    repo_url,
-                    request.session.session_key,
+                # answer = ChatService().ask(
+                #     question,
+                #     repo_url,
+                #     request.session.session_key,
+                # )
+                answer = asyncio.run(
+                    ChatService().ask(
+                        question,
+                        repo_url,
+                        request.session.session_key,
+                    )
                 )
             except Exception as error:
                 # Keep AJAX responses JSON so the client can display the

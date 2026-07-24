@@ -5,7 +5,7 @@ from .tools import service
 mcp = FastMCP("GitHub Engineering Mentor")
 
 @mcp.tool()
-def ask_repository(
+async def ask_repository(
     repository_url: str,
     question: str,
 ) -> str:
@@ -13,7 +13,7 @@ def ask_repository(
     Ask questions about a repository.
     """
 
-    return service.ask_repository(
+    return await service.ask_repository(
         question=question,
         repository_url=repository_url,
     )

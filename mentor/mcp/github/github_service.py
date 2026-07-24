@@ -5,10 +5,6 @@ from mentor.mcp.github.github_client import (
     GitHubMCPClient,
 )
 
-# from mentor.mcp.github.response_formatter import (
-#     MCPResponseFormatter,
-# )
-
 from mentor.mcp.github.context_builder import (
     GitHubContextBuilder,
 )
@@ -22,17 +18,16 @@ class GitHubService:
         # self.formatter = MCPResponseFormatter()
         self.context_builder = GitHubContextBuilder()
 
-    def get_file_contents(
+    async def get_file_contents(
         self,
         owner,
         repo,
         path,
     ):
 
-        result = asyncio.run(
+        result = await self.client.call_tool(
 
-            self.client.call_tool(
-
+            
                 "get_file_contents",
 
                 {
@@ -40,7 +35,7 @@ class GitHubService:
                     "repo": repo,
                     "path": path,
                 },
-            )
+            
         )
 
         if result.isError:
@@ -55,43 +50,42 @@ class GitHubService:
 
         return None
 
-    def list_commits(
+    async def list_commits(
         self,
         owner,
         repo,
     ):
 
-        return asyncio.run(
+        return await self.client.call_tool(
 
-            self.client.call_tool(
-
+        
                 "list_commits",
 
                 {
                     "owner": owner,
                     "repo": repo,
                 },
-            )
+            
         )
 
-    def search_code(
+    async def search_code(
         self,
         query,
     ):
 
-        return asyncio.run(
+        return await self.client.call_tool(
 
-            self.client.call_tool(
+            
 
                 "search_code",
 
                 {
                     "query": query,
                 },
-            )
+            
         )
 
-    def execute(
+    async def execute(
         self,
         route,
     ):
@@ -105,25 +99,15 @@ class GitHubService:
         args = route["args"]
 
         if tool == "get_commit_details":
-            return self.get_commit_details(
+            return await self.get_commit_details(
                 owner=args["owner"],
                 repo=args["repo"],
                 question=args["question"],
             )
 
-        result = asyncio.run(
+        result = await self.client.call_tool( tool, args )
 
-            self.client.call_tool(
-
-                tool,
-
-                args,
-            )
-        )
-
-        # if result.isError:
-
-        #     return None
+  return None
 
         if result.isError:
             raise Exception(result)
@@ -135,14 +119,14 @@ class GitHubService:
                 result,
             )
 
-    def get_commit_details(
+    async def get_commit_details(
         self,
         owner: str,
         repo: str,
         question: str,
     ):
         """Find the requested commit, then ask GitHub for its changed files."""
-        commits_result = self.list_commits(owner, repo)
+        commits_result = await self.list_commits(owner, repo)
 
         if commits_result.isError or not commits_result.content:
             return "GitHub could not load the commit history."
@@ -161,15 +145,14 @@ class GitHubService:
         if not sha:
             return "GitHub did not provide an identifier for the requested commit."
 
-        result = asyncio.run(
-            self.client.call_tool(
+        result = await self.client.call_tool(
                 "get_commit",
                 {
                     "owner": owner,
                     "repo": repo,
                     "sha": sha,
                 },
-            )
+            
         )
 
         if result.isError:
