@@ -1,7 +1,20 @@
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
+#!/usr/bin/env python
+
 import os
 import sys
+
+for var in ("NO_PROXY", "no_proxy"):
+    value = os.environ.get(var)
+    if value:
+        os.environ[var] = ",".join(
+            item
+            for item in value.split(",")
+            if item != "prefix:local."
+        )
+
+
 
 
 def main():

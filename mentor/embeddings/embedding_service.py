@@ -2,6 +2,11 @@ from sentence_transformers import (
     SentenceTransformer,
 )
 
+import sys
+from huggingface_hub.utils import disable_progress_bars
+
+# Disable Hugging Face progress bars globally
+disable_progress_bars()
 
 class EmbeddingService:
 
@@ -9,11 +14,11 @@ class EmbeddingService:
 
     def __init__(self):
 
-        print("EmbeddingService initialized")
+        print("EmbeddingService initialized", file=sys.stderr)
 
         if EmbeddingService._model is None:
 
-            print("Loading embedding model...")
+            print("Loading embedding model...", file=sys.stderr)
 
             EmbeddingService._model = (
                 SentenceTransformer(

@@ -1,4 +1,5 @@
 
+import sys
 from mentor.llm.response_parser import (
     ResponseParser,
 )
@@ -56,9 +57,9 @@ class AnswerGenerator:
             )
         )
 
-        print("\n========== PROMPT ==========\n")
-        print(prompt)
-        print("\n============================\n")
+        print("\n========== PROMPT ==========\n",file=sys.stderr)
+        print(prompt,file=sys.stderr)
+        print("\n============================\n",file=sys.stderr)
 
         response = (
             self.llm.invoke(

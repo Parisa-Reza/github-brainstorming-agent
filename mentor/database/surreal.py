@@ -1,3 +1,5 @@
+
+import os
 from surrealdb import Surreal
 
 from mentor.config import (
@@ -10,26 +12,41 @@ from mentor.config import (
 
 
 def get_db():
-    db = Surreal(SURREAL_URL)
+    # Disable proxy only for localhost SurrealDB
+    old_http = os.environ.pop("HTTP_PROXY", None)
+    old_https = os.environ.pop("HTTPS_PROXY", None)
+    old_http_l = os.environ.pop("http_proxy", None)
+    old_https_l = os.environ.pop("https_proxy", None)
+    old_no = os.environ.pop("NO_PROXY", None)
+    old_no_l = os.environ.pop("no_proxy", None)
 
-    db.signin(
-        {
-            "username": SURREAL_USERNAME,
-            "password": SURREAL_PASSWORD,
-        }
-    )
+    try:
+        db = Surreal(SURREAL_URL)
 
-    db.use(
-        SURREAL_NAMESPACE,
-        SURREAL_DATABASE,
-    )
+        db.signin(
+            {
+                "username": SURREAL_USERNAME,
+                "password": SURREAL_PASSWORD,
+            }
+        )
 
-    return db
+        db.use(
+            SURREAL_NAMESPACE,
+            SURREAL_DATABASE,
+        )
 
-if __name__ == "__main__":
-    db = get_db()
-    db.query("""
-        DEFINE TABLE memory SCHEMALESS;
-        """)
-    result = db.query("INFO FOR DB;")
-    print("DB Connected successfully:", result)
+        return db
+
+    finally:
+        if old_http:
+            os.environ["HTTP_PROXY"] = old_http
+        if old_https:
+            os.environ["HTTPS_PROXY"] = old_https
+        if old_http_l:
+            os.environ["http_proxy"] = old_http_l
+        if old_https_l:
+            os.environ["https_proxy"] = old_https_l
+        if old_no:
+            os.environ["NO_PROXY"] = old_no
+        if old_no_l:
+            os.environ["no_proxy"] = old_no_l
