@@ -1,0 +1,72 @@
+
+import sys
+from mentor.llm.response_parser import (
+    ResponseParser,
+)
+
+from mentor.llm.llm_service import (
+    LLMService,
+)
+
+from mentor.llm.prompt_builder import (
+    PromptBuilder,
+)
+
+
+class AnswerGenerator:
+
+    def __init__(self):
+
+        self.llm = (
+            LLMService().get_llm()
+        )
+
+        self.prompt_builder = (
+            PromptBuilder()
+        )
+
+        self.parser = (
+            ResponseParser()
+        )
+
+    def generate(
+    self,
+    question: str,
+    context: str,
+    history: list[dict],
+    memories: list[str],
+    ):
+
+        history_text = ""
+
+        for message in history:
+
+            history_text += (
+                f"{message['role']}: "
+                f"{message['content']}\n"
+            )
+
+        prompt = (
+            self.prompt_builder
+            .build()
+            .format(
+                history=history_text,
+                memories=memories,
+                context=context,
+                question=question,
+            )
+        )
+
+        print("\n========== PROMPT ==========\n",file=sys.stderr)
+        print(prompt,file=sys.stderr)
+        print("\n============================\n",file=sys.stderr)
+
+        response = (
+            self.llm.invoke(
+                prompt
+            )
+        )
+
+        return self.parser.parse(
+            response
+        )
