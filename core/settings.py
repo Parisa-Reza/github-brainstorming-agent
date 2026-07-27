@@ -7,10 +7,9 @@ environ.Env.read_env(BASE_DIR / ".env")
 
 
 SECRET_KEY = env("SECRET_KEY")
-
-DEBUG = True
-
-ALLOWED_HOSTS = []
+DEBUG = env.bool("DEBUG", default=False)
+ALLOWED_HOSTS = ["*"]
+CSRF_TRUSTED_ORIGINS = ["https://*.onrender.com"]
 
 
 # Application definition
