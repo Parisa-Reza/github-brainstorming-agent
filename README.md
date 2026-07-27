@@ -1,6 +1,6 @@
 # GitHub Brainstorming Agent
 
-**Live Link:** [Demo video of the agent](<https://1drv.ms/v/c/a1e09615c8a551ad/IQDwsnb8B68gTZ05OG1w2ML8Ae8ndutiDUTWjO8TUOqmdQU?e=bRKATR>)
+**Live Link:** Will be deployed soon using paid service with sufficient amount of memory
 
 **Demo Video 1 :**  [Demo video of the agent](<https://1drv.ms/v/c/a1e09615c8a551ad/IQDwsnb8B68gTZ05OG1w2ML8Ae8ndutiDUTWjO8TUOqmdQU?e=bRKATR>)
 <br>
